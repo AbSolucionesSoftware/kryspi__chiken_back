@@ -96,6 +96,9 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true});
         const admin = await adminModel.find({});
 
+        const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
+        res.status(200).json({ message: 'Apartado creado', nuevoPedido })s
+
         if(pedidoCompleto.carrito === true){
             await Carrito.findOneAndDelete({ cliente: pedidoCompleto.cliente._id });
         }
@@ -203,9 +206,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 
         email.sendEmail(admin[0].email,"Orden realizada",htmlContentAdmin,tienda[0].nombre); */
 
-        const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
-
-        res.status(200).json({ message: 'Apartado creado', nuevoPedido })
 
 
     } catch (error) {
