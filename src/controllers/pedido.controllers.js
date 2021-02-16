@@ -1,10 +1,10 @@
 const pedidoCtrl = {};
-
 const pedidoModel = require('../models/Pedido');
 const email = require('../middleware/sendEmail');
 const Tienda = require('../models/Tienda');
 const politicasModel = require('../models/PoliticasEnvio');
 const Carrito = require('../models/Carrito');
+const adminModel = require('../models/Administrador');
 
 pedidoCtrl.getPedidos = async (req, res, next) => {
     try {
@@ -94,15 +94,15 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         const { pedidoCompleto } = req.body;
         console.log(pedidoCompleto);
         await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true});
-        const admin = await adminModel.find({});
+        
 
         const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
-        res.status(200).json({ message: 'Apartado creado', nuevoPedido })s
+        res.status(200).json({ message: 'Apartado creado', nuevoPedido });
 
         if(pedidoCompleto.carrito === true){
             await Carrito.findOneAndDelete({ cliente: pedidoCompleto.cliente._id });
         }
-
+        const admin = await adminModel.find({});
         const tienda = await Tienda.find();
         const pedidoPopulate = await pedidoModel.findById(pedidoCompleto._id).populate("cliente").populate({
             path: 'pedido.producto',
