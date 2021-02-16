@@ -404,18 +404,18 @@ pedidoCtrl.updateEstadoPedido = async (req, res, next) => {
 }
 
 pedidoCtrl.updatePedido = async (req,res) => {
-try {
-    const { total } = req.body;
-    const pedidoBase = await pedidoModel.findById(req.params.id);
-    const newPedido = pedidoBase;
-    newPedido.total = total;
-    await pedidoModel.findByIdAndUpdate(req.params.id,newPedido);
+    try {
+        const { total } = req.body;
+        const pedidoBase = await pedidoModel.findById(req.params.id);
+        const newPedido = pedidoBase;
+        newPedido.total = total;
+        await pedidoModel.findByIdAndUpdate(req.params.id,newPedido);
 
-    res.status(200).json({ message: "Pedido Actualizado" });
+        res.status(200).json({ message: "Pedido Actualizado" });
 
-} catch (error) {
-    res.status(500).json({ message: 'Ups, algo paso.', err });
-}
+    } catch (error) {
+        res.status(500).json({ message: 'Ups, algo paso.', err });
+    }
 }
 
 module.exports = pedidoCtrl;
