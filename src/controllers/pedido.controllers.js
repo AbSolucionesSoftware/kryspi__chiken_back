@@ -92,6 +92,7 @@ pedidoCtrl.getPedidosUser = async (req, res, next) => {
 pedidoCtrl.generatePedidoPagado = async (req,res) => {
     try {
         const { pedidoCompleto } = req.body;
+        console.log(pedidoCompleto);
         await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true});
         const admin = await adminModel.find({});
 
