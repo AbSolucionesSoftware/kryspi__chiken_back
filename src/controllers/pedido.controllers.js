@@ -199,9 +199,9 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         </div>
         `;
         
-        email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
+        /* email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
-        email.sendEmail(admin[0].email,"Orden realizada",htmlContentAdmin,tienda[0].nombre);
+        email.sendEmail(admin[0].email,"Orden realizada",htmlContentAdmin,tienda[0].nombre); */
 
         const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
 
@@ -209,7 +209,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 
 
     } catch (error) {
-        res.status(500).json({ message: 'Ups, algo paso al registrar el usuario', error });
+        res.status(500).json({ message: 'Ups, algo paso al generar la orden', error });
     }
 }
 
