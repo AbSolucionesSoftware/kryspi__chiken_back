@@ -93,8 +93,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
     try {
         const { pedidoCompleto } = req.body;
         console.log(pedidoCompleto);
-        await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true});
-        
+        await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true, tipo_pago: "Pago en efectivo."});
 
         const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
         res.status(200).json({ message: 'Apartado creado', nuevoPedido });

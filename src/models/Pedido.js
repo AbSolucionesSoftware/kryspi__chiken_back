@@ -41,8 +41,8 @@ const pedidosSchema = new mongoose.Schema(
 		},
 		codigo_seguimiento: {
 			type: String
-		}
-	
+		},
+		tipo_pago: String
 	},
 	{
 		timestamps: true

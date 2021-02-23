@@ -170,6 +170,7 @@ pagoCtrl.createPago = async (req, res) => {
 
                         const pedidoPagado = await pedidoModel.findById(pedidoCompleto._id);
                         pedidoPagado.pagado = true;  
+                        pedidoPagado.tipo_pago = "Pago con tarjeta";
                          await pedidoModel.findByIdAndUpdate({ _id: pedidoPagado._id },pedidoPagado, { new: true },(err, userStored) => {
                             if (err) {
                                 res.status(500).send({ message: 'Ups, parece que algo salio mal', err });
