@@ -1206,10 +1206,8 @@ productosCtrl.crecarFiltrosNavbar = async (req, res, next) => {
 								[
 									{
 										$match: {
-											$or: [ { categoria: categorias[i]._id }],
-											$and: [
-												{ eliminado: { $exists: false } }, { eliminado: false } ,
-											]
+											$or: [{ eliminado: { $exists: false } }, { eliminado: false } ],
+											$and: [ { categoria: categorias[i]._id }]
 										}
 									},
 									{
