@@ -215,7 +215,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         </div>
         `;
         
-        //email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
+        email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
         email.sendEmail(admin[0].email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
 
