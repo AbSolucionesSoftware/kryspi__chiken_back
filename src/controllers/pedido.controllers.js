@@ -96,7 +96,8 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true, tipo_pago: "Pago en efectivo."});
 
         const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
-        
+
+        res.status(200).json({ message: 'Apartado creado', nuevoPedido });
 
         if(pedidoCompleto.carrito === true){
             await Carrito.findOneAndDelete({ cliente: pedidoCompleto.cliente._id });
@@ -244,8 +245,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
         email.sendEmail(admin[0].email,"Orden realizada",htmlContentAdmin,tienda[0].nombre);
-
-        res.status(200).json({ message: 'Apartado creado', nuevoPedido });
 
     } catch (error) {
         res.status(500).json({ message: 'Ups, algo paso al generar la orden', error });
