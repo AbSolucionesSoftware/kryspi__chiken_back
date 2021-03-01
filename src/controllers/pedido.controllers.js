@@ -115,7 +115,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         
         //console.log(pedidoPopulate);
         
-        for(let i = 0; i < pedidoPopulate.pedido.length; i++){
+        /* for(let i = 0; i < pedidoPopulate.pedido.length; i++){
             subTotal += parseFloat(pedidoPopulate.pedido[i].precio);
             pedidos += `
             <tr>
@@ -132,7 +132,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                 <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;"> $ ${pedidoPopulate.pedido[i].precio}</p></td>
             </tr>
             `;
-        }
+        } */
 
         const htmlContentAdmin = `
         <div>
