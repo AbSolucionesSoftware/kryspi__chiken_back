@@ -113,7 +113,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         let pedidos = ``;
         let subTotal = 0;
         
-        console.log(pedidoPopulate);
+        //console.log(pedidoPopulate);
         
         for(let i = 0; i < pedidoPopulate.pedido.length; i++){
             subTotal += parseFloat(pedidoPopulate.pedido[i].precio);
@@ -157,21 +157,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                 `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas[0].descuento}</h3>`    
                 :"" }
                 <h3 style=" color: #2DD703; margin:auto; margin-left: 360px;"><strong>Total: </strong>$ ${pedidoPopulate.total}</h3>
-            </div>
-            <div style="margin:auto; max-width: 550px; height: 100px;">
-            <div class="" style="margin-top: 20px; padding: 5px;">
-					<p style="text-align: center; font-family: sans-serif;" > <span style="font-weight: bold;">Solicitud de:</span> ${pedidoPopulate.cliente.nombre} ${pedidoPopulate.cliente.apellido}</p>
-	
-					<p style="text-align: center; font-family: sans-serif;">Info del cliente:</p>
-					<div  style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);transition: 0.3s; width: 200px; display:block; margin:auto;">
-						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Correo:</span> ${pedidoPopulate.cliente.email}</p>
-						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Telefono:</span> ${pedidoPopulate.cliente.telefono}</p>
-						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Direccion:</span> ${pedidoPopulate.cliente.direccion[0].calle_numero} Colonia ${pedidoPopulate.cliente.direccion[0].colonia} ${pedidoPopulate.cliente.direccion[0].ciudad} ${pedidoPopulate.cliente.direccion[0].estado} ${pedidoPopulate.cliente.direccion[0].pais}.</p>
-					</div>
-					<p style="text-align: center; font-family: sans-serif;"><span style="font-weight: bold;">Tipo de entrega:</span> ${tipoEntrega === 'ENVIO'
-						? 'Envio a domicilio'
-						: 'Recoger a sucursal'}</p>
-				</div>
             </div>
         </div>
         `;
