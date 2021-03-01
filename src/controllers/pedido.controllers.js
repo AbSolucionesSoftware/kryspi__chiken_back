@@ -136,10 +136,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 
         const htmlContentAdmin = `
         <div>
-            <div style="margin:auto; max-width: 550px; height: 100px;">
-                ${tienda[0].imagenLogo ? `<img style="max-width: 200px; display:block; margin:auto; padding: 10px 0px;" src="${process.env.URL_IMAGEN_AWS}${tienda[0].imagenLogo}" />`:""} 
-            </div>
-            
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Tienes una nueva orden.</h3>
             <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">El cliente espera su orden.</h4>
     
@@ -147,7 +143,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
             <div style="margin:auto; max-width: 550px;">
                 <table >
                     <tr>
-                        
                         <td style="  padding: 15px; text-align: left;"><strong>Producto</strong></td>
                         <td style="  padding: 15px; text-align: left;"><strong></strong></td>
                         <td style="  padding: 15px; text-align: left;"><strong>Cantidad</strong></td>
@@ -162,7 +157,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                 `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas[0].descuento}</h3>`    
                 :"" }
                 <h3 style=" color: #2DD703; margin:auto; margin-left: 360px;"><strong>Total: </strong>$ ${pedidoPopulate.total}</h3>
-                
             </div>
             <div style="margin:auto; max-width: 550px; height: 100px;">
             <div class="" style="margin-top: 20px; padding: 5px;">
@@ -170,11 +164,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 	
 					<p style="text-align: center; font-family: sans-serif;">Info del cliente:</p>
 					<div  style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);transition: 0.3s; width: 200px; display:block; margin:auto;">
-	
-					${pedidoPopulate.cliente.tipoSesion !== 'FireBase'
-						? `<img style="max-width: 70px; display:block; margin:auto;" class="" src="${process.env.URL_IMAGEN_AWS}${pedidoPopulate.cliente.imagen}"/>`
-						: `<img style="max-width: 70px; display:block; margin:auto;" class="" src="${pedidoPopulate.cliente.imagen}"/>`}
-	
 						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Correo:</span> ${pedidoPopulate.cliente.email}</p>
 						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Telefono:</span> ${pedidoPopulate.cliente.telefono}</p>
 						<p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Direccion:</span> ${pedidoPopulate.cliente.direccion[0].calle_numero} Colonia ${pedidoPopulate.cliente.direccion[0].colonia} ${pedidoPopulate.cliente.direccion[0].ciudad} ${pedidoPopulate.cliente.direccion[0].estado} ${pedidoPopulate.cliente.direccion[0].pais}.</p>
@@ -183,7 +172,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 						? 'Envio a domicilio'
 						: 'Recoger a sucursal'}</p>
 				</div>
-                <p style="padding: 10px 0px;">Ya estamos trabajando para mandar tu pedido, si tienes alguna duda no dudes en contactarnos.</p>
             </div>
         </div>
         `;
