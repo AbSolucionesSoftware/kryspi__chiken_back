@@ -112,27 +112,6 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         
         let pedidos = ``;
         let subTotal = 0;
-        
-        //console.log(pedidoPopulate);
-        
-        /* for(let i = 0; i < pedidoPopulate.pedido.length; i++){
-            subTotal += parseFloat(pedidoPopulate.pedido[i].precio);
-            pedidos += `
-            <tr>
-                <td style="  padding: 15px; text-align: left;"><img style="max-width: 150px; display:block; margin:auto;" class="" src="${process.env.URL_IMAGEN_AWS}${pedidoPopulate.pedido[i].producto.imagen}" /></td>
-                <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;" > ${pedidoPopulate.pedido[i].producto.nombre}</p></td>
-                <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].cantidad}</p></td>
-                <td style="  padding: 15px; text-align: left;">
-                    ${pedidoPopulate.pedido[i].numero || pedidoPopulate.pedido[i].talla ? pedidoPopulate.pedido[i].numero ? 
-                        `<p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].numero}</p>` : 
-                        `<p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].talla}</p>`:
-                        `<p style="text-align: center; font-family: sans-serif;"><span style="font-weight: bold;">No aplica</span></p>`
-                    }
-                </td>
-                <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;"> $ ${pedidoPopulate.pedido[i].precio}</p></td>
-            </tr>
-            `;
-        } */
 
         const htmlContentAdmin = `
         <div>
