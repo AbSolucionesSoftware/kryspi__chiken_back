@@ -162,7 +162,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                         margin: 4px 2px;
                         cursor: pointer;
                         text-decoration:none;
-                    " href="https://krispychicken.mx/admin/pedidos"> Ir a pedidos</a>
+                    " href="https://krispychicken.mx/admin/pedidos"> Ir al pedido</a>
                 </Button>
             </div>
         </div>
@@ -196,7 +196,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         
         //email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
-        email.sendEmail(pedidoPopulate.cliente.email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
+        email.sendEmail(admin[0].email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
 
     } catch (error) {
         res.status(500).json({ message: 'Ups, algo paso al generar la orden', error });
