@@ -150,7 +150,20 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                     ${pedidos}
                 </table>
             </div>
-            <Button><a href="https://krispychicken.mx/admin/pedidos"> Ir a pedidos</a></Button>
+            <Button style=" 
+                background-color: Blue;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            ">
+                    <a href="https://krispychicken.mx/admin/pedidos"> Ir a pedidos</a>
+            </Button>
         </div>
         `;
 
