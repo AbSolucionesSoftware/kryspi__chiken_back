@@ -161,6 +161,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                 font-size: 16px;
                 margin: 4px 2px;
                 cursor: pointer;
+                text-decoration:none;
             ">
                     <a href="https://krispychicken.mx/admin/pedidos"> Ir a pedidos</a>
             </Button>
