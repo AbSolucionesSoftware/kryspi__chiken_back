@@ -108,7 +108,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
             model: 'producto'
         })
 
-        const politicas = await politicasModel.find().populate("idTienda").populate("idAdministrador");
+        //const politicas = await politicasModel.findOne({}).populate("idTienda").populate("idAdministrador");
         
         let pedidos = ``;
         let subTotal = 0;
@@ -130,25 +130,14 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                     </tr>
                     ${pedidos}
                 </table>
-                <h3 style=" margin:auto; margin-left: 360px;"><strong>Sub total: </strong>$ ${subTotal}</h3>
-                <h3 style=" margin:auto; margin-left: 360px;"><strong>Costo de envio: </strong>$ ${politicas[0].costoEnvio}</h3>
-                ${subTotal >= politicas[0].promocionEnvio ? 
-                `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas[0].descuento}</h3>`    
-                :"" }
-                <h3 style=" color: #2DD703; margin:auto; margin-left: 360px;"><strong>Total: </strong>$ ${pedidoPopulate.total}</h3>
             </div>
         </div>
         `;
 
-        const htmlContentUser = `
+        /* const htmlContentUser = `
         <div>
-            <div style="margin:auto; max-width: 550px; height: 100px;">
-                ${tienda[0].imagenLogo ? `<img style="max-width: 200px; display:block; margin:auto; padding: 10px 0px;" src="${process.env.URL_IMAGEN_AWS}${tienda[0].imagenLogo}" />`:""} 
-            </div>
-            
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Tu orden esta en proceso</h3>
             <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">La orden esta siendo procesada, si tienes alguna duda no dudes en contactarnos.</h4>
-    
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
             <div style="margin:auto; max-width: 550px;">
                 <table >
@@ -163,40 +152,17 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
                     ${pedidos}
                 </table>
                 <h3 style=" margin:auto; margin-left: 360px;"><strong>Sub total: </strong>$ ${subTotal}</h3>
-                <h3 style=" margin:auto; margin-left: 360px;"><strong>Costo de envio: </strong>$ ${politicas[0].costoEnvio}</h3>
-                ${subTotal >= politicas[0].promocionEnvio ? 
-                `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas[0].descuento}</h3>`    
+                <h3 style=" margin:auto; margin-left: 360px;"><strong>Costo de envio: </strong>$ ${politicas.costoEnvio}</h3>
+                ${subTotal >= politicas.promocionEnvio ? 
+                `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas.descuento}</h3>`    
                 :"" }
                 <h3 style=" color: #2DD703; margin:auto; margin-left: 360px;"><strong>Total: </strong>$ ${pedidoPopulate.total}</h3>
-
-                <div style="margin:auto; max-width: 550px; height: 100px;">
-                <div class="" style="margin-top: 20px; padding: 5px;">
-                        <p style="text-align: center; font-family: sans-serif;" > <span style="font-weight: bold;">Solicitud de:</span> ${pedidoPopulate.cliente.nombre} ${pedidoPopulate.cliente.apellido}</p>
-        
-                        <p style="text-align: center; font-family: sans-serif;">Info del cliente:</p>
-                        <div  style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);transition: 0.3s; width: 200px; display:block; margin:auto;">
-        
-                        ${pedidoPopulate.cliente.tipoSesion !== 'FireBase'
-                            ? `<img style="max-width: 70px; display:block; margin:auto;" class="" src="${process.env.URL_IMAGEN_AWS}${pedidoPopulate.cliente.imagen}"/>`
-                            : `<img style="max-width: 70px; display:block; margin:auto;" class="" src="${pedidoPopulate.cliente.imagen}"/>`}
-        
-                            <p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Correo:</span> ${pedidoPopulate.cliente.email}</p>
-                            <p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Telefono:</span> ${pedidoPopulate.cliente.telefono}</p>
-                            <p style="text-align: center; font-family: sans-serif;font-size: 13px;" ><span style="font-weight: bold;">Direccion:</span> ${pedidoPopulate.cliente.direccion[0].calle_numero} Colonia ${pedidoPopulate.cliente.direccion[0].colonia} ${pedidoPopulate.cliente.direccion[0].ciudad} ${pedidoPopulate.cliente.direccion[0].estado} ${pedidoPopulate.cliente.direccion[0].pais}.</p>
-                        </div>
-                        <p style="text-align: center; font-family: sans-serif;"><span style="font-weight: bold;">Tipo de entrega:</span> ${tipoEntrega === 'ENVIO'
-                            ? 'Envio a domicilio'
-                            : 'Recoger a sucursal'}</p>
-                    </div>
-                    <p style="padding: 10px 0px;">Ya estamos trabajando para mandar tu pedido, si tienes alguna duda no dudes en contactarnos.</p>
-                </div>
             </div>
-        </div>
-        `;
+        </div>`; */
         
-        email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
+        //email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
-        email.sendEmail(admin[0].email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
+        email.sendEmail(pedidoPopulate.cliente.email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
 
     } catch (error) {
         res.status(500).json({ message: 'Ups, algo paso al generar la orden', error });
