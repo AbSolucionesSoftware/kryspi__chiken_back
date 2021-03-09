@@ -170,7 +170,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
 
         const htmlContentUser = `
         <div>
-            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Tu orden esta en proceso</h3>
+            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Hemos recibido tu orden!!!</h3>
             <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">La orden esta siendo procesada, si tienes alguna duda no dudes en contactarnos.</h4>
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
             <div style="margin:auto; max-width: 550px;">
