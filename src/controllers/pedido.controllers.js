@@ -168,33 +168,17 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         </div>
         `;
 
-        /* const htmlContentUser = `
+        const htmlContentUser = `
         <div>
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Tu orden esta en proceso</h3>
             <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">La orden esta siendo procesada, si tienes alguna duda no dudes en contactarnos.</h4>
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
             <div style="margin:auto; max-width: 550px;">
-                <table >
-                    <tr>
-                        
-                        <td style="  padding: 15px; text-align: left;"><strong>Producto</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong></strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Cantidad</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Medida</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Precio</strong></td>
-                    </tr>
-                    ${pedidos}
-                </table>
-                <h3 style=" margin:auto; margin-left: 360px;"><strong>Sub total: </strong>$ ${subTotal}</h3>
-                <h3 style=" margin:auto; margin-left: 360px;"><strong>Costo de envio: </strong>$ ${politicas.costoEnvio}</h3>
-                ${subTotal >= politicas.promocionEnvio ? 
-                `<h3 style=" color: #CC2300; margin:auto; margin-left: 360px;"><strong>Descuento: </strong>- $${politicas.descuento}</h3>`    
-                :"" }
-                <h3 style=" color: #2DD703; margin:auto; margin-left: 360px;"><strong>Total: </strong>$ ${pedidoPopulate.total}</h3>
+                <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Tu orden esta en proceso.</h3>
             </div>
-        </div>`; */
+        </div>`;
         
-        //email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
+        email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
 
         email.sendEmail(admin[0].email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
 
