@@ -174,6 +174,16 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
             <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">La orden esta siendo procesada, si tienes alguna duda no dudes en contactarnos.</h4>
             <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
             <div style="margin:auto; max-width: 550px;">
+                <table >
+                    <tr>
+                        <td style="  padding: 15px; text-align: left;"><strong>Producto</strong></td>
+                        <td style="  padding: 15px; text-align: left;"><strong></strong></td>
+                        <td style="  padding: 15px; text-align: left;"><strong>Cantidad</strong></td>
+                        <td style="  padding: 15px; text-align: left;"><strong>Medida</strong></td>
+                        <td style="  padding: 15px; text-align: left;"><strong>Precio</strong></td>
+                    </tr>
+                    ${pedidos}
+                </table>
                 <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Tu orden esta en proceso.</h3>
             </div>
         </div>`;
