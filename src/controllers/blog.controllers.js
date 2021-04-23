@@ -19,8 +19,7 @@ blogCtrl.getBlogs = async (req, res) => {
         limit: parseInt(limit),
         sort: { createdAt: -1 }
     }
-
-blogModel.paginate({}, options, (err, postStored) => {
+    blogModel.paginate({}, options, (err, postStored) => {
         if (err) {
             res.status(500).json({ message: "Error en el servidor",err });
         } else {

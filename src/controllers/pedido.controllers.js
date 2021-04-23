@@ -1,10 +1,9 @@
 const pedidoCtrl = {};
+
 const pedidoModel = require('../models/Pedido');
 const email = require('../middleware/sendEmail');
 const Tienda = require('../models/Tienda');
 const politicasModel = require('../models/PoliticasEnvio');
-const Carrito = require('../models/Carrito');
-const adminModel = require('../models/Administrador');
 
 pedidoCtrl.getPedidos = async (req, res, next) => {
     try {
@@ -18,7 +17,6 @@ pedidoCtrl.getPedidos = async (req, res, next) => {
         next();
     }
 }
-
 pedidoCtrl.getPedidosAdmin = async (req, res, next) => {
     try {
         const { page = 1, limit = 10 } = req.query;
@@ -35,7 +33,6 @@ pedidoCtrl.getPedidosAdmin = async (req, res, next) => {
         next();
     }
 }
-
 pedidoCtrl.getPedidosAdminFiltrados = async (req, res, next) => {
     try {
         const { page = 1, limit = 10, filtro } = req.query;
@@ -51,7 +48,6 @@ pedidoCtrl.getPedidosAdminFiltrados = async (req, res, next) => {
         next();
     }
 }
-
 pedidoCtrl.getPedido = async (req, res, next) => {
     try {
         const pedidos = await pedidoModel.findById(req.params.id).populate('cliente').populate({
@@ -89,118 +85,10 @@ pedidoCtrl.getPedidosUser = async (req, res, next) => {
     }
 }
 
-pedidoCtrl.generatePedidoPagado = async (req,res) => {
-    try {
-        const { pedidoCompleto } = req.body;
-        await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true, tipo_pago: "Pago en efectivo."});
-
-        const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
-
-        res.status(200).json({ message: 'Orden realizada', nuevoPedido });
-
-        if(pedidoCompleto.carrito === true){
-            await Carrito.findOneAndDelete({ cliente: pedidoCompleto.cliente._id });
-        }
-        const admin = await adminModel.find({});
-        const tienda = await Tienda.find();
-        const pedidoPopulate = await pedidoModel.findById(pedidoCompleto._id).populate("cliente").populate({
-            path: 'pedido.producto',
-            model: 'producto'
-        })
-
-        //const politicas = await politicasModel.find({}).populate("idTienda").populate("idAdministrador");
-        
-        let pedidos = ``;
-        let subTotal = 0;
-
-        for(let i = 0; i < pedidoPopulate.pedido.length; i++){
-                    subTotal += (parseFloat(pedidoPopulate.pedido[i].cantidad) * parseFloat(pedidoPopulate.pedido[i].precio));
-                    pedidos += `
-                    <tr>
-                        <td style="  padding: 15px; text-align: left;"><img style="max-width: 150px; display:block; margin:auto;" class="" src="${process.env.URL_IMAGEN_AWS}${pedidoPopulate.pedido[i].producto.imagen}" /></td>
-                        <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;" > ${pedidoPopulate.pedido[i].producto.nombre}</p></td>
-                        <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].cantidad}</p></td>
-                        <td style="  padding: 15px; text-align: left;">
-                            ${pedidoPopulate.pedido[i].numero ? pedidoPopulate.pedido[i].numero ? 
-                                `<p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].numero}</p>` : 
-                                `<p style="text-align: center; font-family: sans-serif;"> ${pedidoPopulate.pedido[i].talla}</p>`:
-                                `<p style="text-align: center; font-family: sans-serif;"><span style="font-weight: bold;">No aplica</span></p>`
-                            }
-                        </td>
-                        <td style="  padding: 15px; text-align: left;"><p style="text-align: center; font-family: sans-serif;"> $ ${pedidoPopulate.pedido[i].precio}</p></td>
-                    </tr>
-                    `;
-                }
-
-        const htmlContentAdmin = `
-        <div>
-            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Tienes una nueva orden.</h3>
-            <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">El cliente espera su orden.</h4>
-    
-            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
-            <div style="margin:auto; max-width: 550px;">
-                <table >
-                    <tr>
-                        <td style="  padding: 15px; text-align: left;"><strong>Producto</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong></strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Cantidad</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Medida</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Precio</strong></td>
-                    </tr>
-                    ${pedidos}
-                </table>
-                <Button>
-                        <a style=" 
-                        background-color: Blue;
-                        border: none;
-                        color: white;
-                        padding: 15px 32px;
-                        text-align: center;
-                        text-decoration: none;
-                        display: inline-block;
-                        font-size: 16px;
-                        margin: 4px 2px;
-                        cursor: pointer;
-                        text-decoration:none;
-                    " href="https://krispychicken.mx/admin/pedidos"> Ir al pedido</a>
-                </Button>
-            </div>
-        </div>
-        `;
-
-        const htmlContentUser = `
-        <div>
-            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">Hemos recibido tu orden!!!</h3>
-            <h4 style="text-align: center;  font-family: sans-serif; margin: 15px 15px;">La orden esta siendo procesada, si tienes alguna duda no dudes en contactarnos.</h4>
-            <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Detalle de la orden:</h3>
-            <div style="margin:auto; max-width: 550px;">
-                <table >
-                    <tr>
-                        <td style="  padding: 15px; text-align: left;"><strong>Producto</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong></strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Cantidad</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Medida</strong></td>
-                        <td style="  padding: 15px; text-align: left;"><strong>Precio</strong></td>
-                    </tr>
-                    ${pedidos}
-                </table>
-                <h3 style="text-align: center;  font-family: sans-serif; margin: 15px 15px; font-weight: bold;">Tu orden esta en proceso.</h3>
-            </div>
-        </div>`;
-        
-        email.sendEmail(pedidoPopulate.cliente.email,"Orden realizada",htmlContentUser,tienda[0].nombre);
-
-        email.sendEmail(admin[0].email,"Nueva orden",htmlContentAdmin,tienda[0].nombre);
-
-    } catch (error) {
-        res.status(500).json({ message: 'Ups, algo paso al generar la orden', error });
-    }
-}
-
 pedidoCtrl.createPedido = async (req, res, next) => {
 
 /*     newpedido.estado_pedido = "En proceso";
-       newpedido.mensaje_admin = "Tu pedido esta siendo procesado"; */
+    newpedido.mensaje_admin = "Tu pedido esta siendo procesado"; */
     try {
         const newpedido = new pedidoModel(req.body);
         console.log(req.body);
@@ -388,18 +276,18 @@ pedidoCtrl.updateEstadoPedido = async (req, res, next) => {
 }
 
 pedidoCtrl.updatePedido = async (req,res) => {
-    try {
-        const { total } = req.body;
-        const pedidoBase = await pedidoModel.findById(req.params.id);
-        const newPedido = pedidoBase;
-        newPedido.total = total;
-        await pedidoModel.findByIdAndUpdate(req.params.id,newPedido);
+try {
+    const {total} = req.body;
+    const pedidoBase = await pedidoModel.findById(req.params.id);
+    const newPedido = pedidoBase;
+    newPedido.total = total;
+    await pedidoModel.findByIdAndUpdate(req.params.id,newPedido);
 
-        res.status(200).json({ message: "Pedido Actualizado" });
+    res.status(200).json({ message: "Pedido Actualizado" });
 
-    } catch (error) {
-        res.status(500).json({ message: 'Ups, algo paso.', err });
-    }
+} catch (error) {
+    res.status(500).json({ message: 'Ups, algo paso.', err });
+}
 }
 
 module.exports = pedidoCtrl;

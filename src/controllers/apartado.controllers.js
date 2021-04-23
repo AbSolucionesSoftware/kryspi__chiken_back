@@ -157,9 +157,9 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 	</div>
 	`;
 
-	email.sendEmail(admin[0].email, 'Orden a sucursal', htmlContent, tienda[0].nombre);
+	email.sendEmail(admin[0].email, 'Solicitud de apartado', htmlContent, 'Cafi service');
 
-	email.sendEmail(clienteBase.email, 'Orden en proceso', htmlContentUser, tienda[0].nombre);
+	email.sendEmail(clienteBase.email, 'Apartado en proceso', htmlContentUser, tienda[0].nombre);
 };
 
 apartadoCtrl.createApartadoMultiple = async (req,res) => {
@@ -268,7 +268,7 @@ apartadoCtrl.createApartadoMultiple = async (req,res) => {
 		</div>
 		`;
 	
-		email.sendEmail(admin[0].email, 'Solicitud de apartado', htmlContent, tienda[0].nombre);
+		email.sendEmail(admin[0].email, 'Solicitud de apartado', htmlContent, 'Cafi service');
 	
 		email.sendEmail(clienteBase.email, 'Apartado en proceso', htmlContentUser, tienda[0].nombre);
 
