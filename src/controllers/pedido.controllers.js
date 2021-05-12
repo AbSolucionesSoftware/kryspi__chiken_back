@@ -1,4 +1,5 @@
 const pedidoCtrl = {};
+const clienteModel = require('../models/Cliente');
 const pedidoModel = require('../models/Pedido');
 const email = require('../middleware/sendEmail');
 const Tienda = require('../models/Tienda');
@@ -92,7 +93,31 @@ pedidoCtrl.getPedidosUser = async (req, res, next) => {
 pedidoCtrl.generatePedidoPagado = async (req,res) => {
     try {
         const { pedidoCompleto } = req.body;
-        console.log(pedidoCompleto);
+        // console.log(pedidoCompleto);
+
+        const pedidoUpdate = await pedidoModel.findById(pedidoCompleto._id).populate("cliente");
+        const direction = {
+            calle_numero: "",
+            entre_calles: "",
+            cp: "",
+            colonia:"",
+            ciudad: "",
+            estado: "",
+            pais: ""
+        };
+        if (pedidoUpdate) {
+            if (pedidoCompleto.cliente.direccion.length > 0) {
+                direction.calle_numero = pedidoUpdate.cliente.direccion[0].calle_numero;
+                direction.entre_calles = pedidoUpdate.cliente.direccion[0].entre_calles;
+                direction.cp = pedidoUpdate.cliente.direccion[0].cp;
+                direction.colonia = pedidoUpdate.cliente.direccion[0].colonia;
+                direction.ciudad = pedidoUpdate.cliente.direccion[0].ciudad;
+                direction.estado = pedidoUpdate.cliente.direccion[0].estado;
+                direction.pais = pedidoUpdate.cliente.direccion[0].pais;
+            }
+        }
+        await pedidoModel.findByIdAndUpdate(pedidoCompleto._id, {direccion: direction});
+
         await pedidoModel.findByIdAndUpdate(pedidoCompleto._id,{pagado: true, tipo_pago: "Pago en efectivo."});
 
         const nuevoPedido = await pedidoModel.findById(pedidoCompleto._id);
@@ -114,7 +139,7 @@ pedidoCtrl.generatePedidoPagado = async (req,res) => {
         
         
         for(let i = 0; i < pedidoPopulate.pedido.length; i++){
-            subTotal += parseFloat(pedidoPopulate.pedido[i].precio);
+            subTotal += parseFloat(pedidoPopulate.pedido[i].precio * pedidoPopulate.pedido[i].cantidad);
             pedidos += `
             <tr>
                 <td style="  padding: 15px; text-align: left;"><img style="max-width: 150px; display:block; margin:auto;" class="" src="${process.env.URL_IMAGEN_AWS}${pedidoPopulate.pedido[i].producto.imagen}" /></td>
