@@ -1,4 +1,5 @@
 const pedidoCtrl = {};
+const clienteModel = require('../models/Cliente');
 const pedidoModel = require('../models/Pedido');
 const email = require('../middleware/sendEmail');
 const Tienda = require('../models/Tienda');
