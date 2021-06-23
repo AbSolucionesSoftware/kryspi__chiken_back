@@ -7,6 +7,7 @@ const clienteModel = require('../models/Cliente');
 const adminModel = require('../models/Administrador');
 const Tienda = require('../models/Tienda');
 const Carrito = require('../models/Carrito');
+const { sendNotification } = require("../middleware/pushNotification");
 
 apartadoCtrl.agregarApartado = async (req, res) => {
 	console.log(req.body);
@@ -25,7 +26,7 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 					if (cantidad > numero.cantidad) {
 						res.status(500).send({ message: 'No existen suficientes productos en el inventario' });
 					} else {
-						await newApartado.save((err, response) => {
+						await newApartado.save(async (err, response) => {
 							if (err) {
 								res.status(500).json({ message: 'Hubo un error al crear apartado', err });
 							} else {
@@ -33,6 +34,26 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 									res.status(404).json({ message: 'Error al Crear apartado' });
 								} else {
 									res.status(200).json({ message: 'Apartado creado', response });
+									const nuevo = await Apartado.findById(response._id).populate("producto");
+									await sendNotification(
+										clienteBase.expoPushTokens,
+										"Tu apartado esta siendo procesado.",
+										"Te pedimos que tengas paciencia, en breve se contactaran contigo para mas detalle.",
+										{
+											tipo: "Apartado",
+											item: nuevo
+										}
+									);
+								
+									await sendNotification(
+										admin[0].expoPushTokens,
+										"Tienes un nuevo apartado",
+										"Nuevo apartado solicitado, revisa el apartado, el cliente espera tu respuesta.",
+										{
+											tipo: "Apartado",
+											item: nuevo
+										}
+									);
 								}
 							}
 						});
@@ -45,7 +66,7 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 					if (cantidad > talla.cantidad) {
 						res.status(500).send({ message: 'No existen suficientes productos en el inventario' });
 					} else {
-						await newApartado.save((err, response) => {
+						await newApartado.save(async (err, response) => {
 							if (err) {
 								res.status(500).json({ message: 'Hubo un error al crear apartado', err });
 							} else {
@@ -53,6 +74,26 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 									res.status(404).json({ message: 'Error al Crear apartado' });
 								} else {
 									res.status(200).json({ message: 'Apartado creado', response });
+									const nuevo = await Apartado.findById(response._id).populate("producto");
+									await sendNotification(
+										clienteBase.expoPushTokens,
+										"Tu apartado esta siendo procesado.",
+										"Te pedimos que tengas paciencia, en breve se contactaran contigo para mas detalle.",
+										{
+											tipo: "Apartado",
+											item: nuevo
+										}
+									);
+								
+									await sendNotification(
+										admin[0].expoPushTokens,
+										"Tienes un nuevo apartado",
+										"Nuevo apartado solicitado, revisa el apartado, el cliente espera tu respuesta.",
+										{
+											tipo: "Apartado",
+											item: nuevo
+										}
+									);
 								}
 							}
 						});
@@ -61,11 +102,10 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 			});
 		}
 	} else {
-		console.log(datosProducto);
 		if (cantidad > datosProducto[0].cantidad) {
 			res.status(500).send({ message: 'No existen suficientes productos en el inventario' });
 		} else {
-			await newApartado.save((err, response) => {
+			await newApartado.save(async (err, response) => {
 				if (err) {
 					res.status(500).json({ message: 'Hubo un error al crear apartado', err });
 				} else {
@@ -73,6 +113,26 @@ apartadoCtrl.agregarApartado = async (req, res) => {
 						res.status(404).json({ message: 'Error al Crear apartado' });
 					} else {
 						res.status(200).json({ message: 'Apartado creado', response });
+						const nuevo = await Apartado.findById(response._id).populate("producto");
+						await sendNotification(
+							clienteBase.expoPushTokens,
+							"Tu apartado esta siendo procesado.",
+							"Te pedimos que tengas paciencia, en breve se contactaran contigo para mas detalle.",
+							{
+								tipo: "Apartado",
+								item: nuevo
+							}
+						);
+					
+						await sendNotification(
+							admin[0].expoPushTokens,
+							"Tienes un nuevo apartado",
+							"Nuevo apartado solicitado, revisa el apartado, el cliente espera tu respuesta.",
+							{
+								tipo: "Apartado",
+								item: nuevo
+							}
+						);
 					}
 				}
 			});
@@ -173,7 +233,65 @@ apartadoCtrl.createApartadoMultiple = async (req,res) => {
 		const admin = await adminModel.find({});
 		const tienda = await Tienda.find();
 
-		await newApartado.save();
+		const nuevoApartado = await newApartado.save();
+
+		// const apartadoPopulate = await Apartado.findById(nuevoApartado._id).populate("producto").populate("apartadoMultiple.producto");
+
+		 await Apartado.aggregate([
+			{
+				$lookup: {
+					from: 'promocions',
+					localField: 'producto',
+					foreignField: 'productoPromocion',
+					as: 'promocion'
+				}
+			},
+			{
+				$lookup: {
+					from: 'productos',
+					localField: 'apartadoMultiple.producto',
+					foreignField: '_id',
+					as: 'productosMultiple'
+				}
+			},
+			{
+				$match: {
+					_id: mongoose.Types.ObjectId(nuevoApartado._id)
+				}
+			},
+			{
+				$match: {
+					eliminado: false
+				}
+			}
+		])
+			.sort({ createdAt: -1 })
+			.exec(async function(err, transactions) {
+				if (err) {
+					res.send({ message: 'Error al obtener apartado', err });
+				} else {
+					const apartadoPopulate = await Apartado.populate(transactions, { path: 'cliente producto' });
+					await sendNotification(
+						clienteBase.expoPushTokens,
+						"Tu apartado esta siendo procesado.",
+						"Te pedimos que tengas paciencia, en breve se contactaran contigo para mas detalle.",
+						{
+							tipo: "Apartado",
+							item: apartadoPopulate[0]
+						}
+					);
+			
+					await sendNotification(
+						admin[0].expoPushTokens,
+						"Tienes un nuevo apartado",
+						"Nuevo apartado solicitado, revisa el apartado, el cliente espera tu respuesta.",
+						{
+							tipo: "Apartado",
+							item: apartadoPopulate[0]
+						}
+					);
+				}
+			});
 
 		let pedidos = ``;
 		let subTotal = 0;
@@ -267,6 +385,8 @@ apartadoCtrl.createApartadoMultiple = async (req,res) => {
 			</div>
 		</div>
 		`;
+
+		
 	
 		email.sendEmail(admin[0].email, 'Solicitud de apartado', htmlContent, 'Cafi service');
 	
@@ -608,13 +728,14 @@ async function actualizarApartadoMultiple(apartadoMultiple,action) {
 	})
 }
 
+
 apartadoCtrl.actualizarApartado = async (req, res) => {
 	const apatadoActualizado = req.body;
 	
 	apatadoActualizado.fecha_envio = new Date();
 	const apartadoBase = await Apartado.findById(req.params.idApartado).populate('producto cliente').populate({ path: 'apartadoMultiple.producto',model: 'producto'});
 	const tienda = await Tienda.find();
-
+	const admin = await adminModel.find({});
 	await Apartado.findOneAndUpdate({ _id: req.params.idApartado }, apatadoActualizado, (err, response) => {
 		if (err) {
 			res.status(500).json({ message: 'Hubo un error al actualizar el apartado', err });
@@ -1136,6 +1257,54 @@ apartadoCtrl.actualizarApartado = async (req, res) => {
 		default:
 			break;
 	}
+
+	await Apartado.aggregate([
+		{
+			$lookup: {
+				from: 'promocions',
+				localField: 'producto',
+				foreignField: 'productoPromocion',
+				as: 'promocion'
+			}
+		},
+		{
+			$lookup: {
+				from: 'productos',
+				localField: 'apartadoMultiple.producto',
+				foreignField: '_id',
+				as: 'productosMultiple'
+			}
+		},
+		{
+			$match: {
+				_id: mongoose.Types.ObjectId(nuevoApartado._id)
+			}
+		},
+		{
+			$match: {
+				eliminado: false
+			}
+		}
+	])
+		.sort({ createdAt: -1 })
+		.exec(async function(err, transactions) {
+			if (err) {
+				res.send({ message: 'Error al obtener apartado', err });
+			} else {
+				const apartadoPopulate = await Apartado.populate(transactions, { path: 'cliente producto' });
+				await sendNotification(
+					apartadoBase.cliente.expoPushTokens,
+					`Tu apartado ha sido ${apatadoActualizado.estado}`,
+					mensaje,
+					{
+						tipo: "Apartado",
+						item: apartadoPopulate[0]
+					}
+				);
+			}
+		});
+
+	
 
 	if(apartadoBase.apartadoMultiple.length){
 		let pedidos = ``;

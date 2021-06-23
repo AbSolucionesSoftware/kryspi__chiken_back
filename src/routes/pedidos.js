@@ -27,4 +27,6 @@ router.route('/info/:id')
 router.route('/entrega/realizado').post(auth,generatePedidoPagado);
 
 
+
+
 module.exports = router;
